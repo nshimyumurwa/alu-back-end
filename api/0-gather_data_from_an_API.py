@@ -21,13 +21,13 @@ def main():
                 completed.append(todo['title'])
     
     user_response = requests.get(user_url).json()
-    employee_name = user_response['name']
+    employee_name = user_response['username']
     
     print("Employee {} is done with tasks({}/{}):".format(
         employee_name, len(completed), total_tasks))
     
     for task in completed:
-        print("\t {}".format(task))
+        print("\t{}".format(task))
 
 
 if __name__ == '__main__':
