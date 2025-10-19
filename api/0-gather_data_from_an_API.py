@@ -1,33 +1,27 @@
 #!/usr/bin/python3
-"""script to get todos for a user from API"""
+"""Script to get todos for a user from API"""
 import requests
 import sys
 
 
 def main():
-    """main function"""
+    """Main function"""
     user_id = int(sys.argv[1])
-    todo_url = 'https://jsonplaceholder.typicode.com/todos'
-    user_url = 'https://jsonplaceholder.typicode.com/users/{}'.format(user_id)
+    user_url = f"https://jsonplaceholder.typicode.com/users/{user_id}"
+    todos_url = f"https://jsonplaceholder.typicode.com/todos?userId={user_id}"
 
-    response = requests.get(todo_url)
+    user = requests.get(user_url).json()
+    todos = requests.get(todos_url).json()
 
-    total_questions = 0
-    completed = []
-    for todo in response.json():
-        if todo['userId'] == user_id:
-            total_questions += 1
-            if todo['completed']:
-                completed.append(todo['title'])
+    user_name = user.get("name")
+    completed = [t.get("title") for t in todos if t.get("completed")]
 
-    user_name = requests.get(user_url).json()['name']
-
-    # ✅ Must match the expected output format exactly
     print("Employee Name:", user_name)
-    print("Number of done tasks: {}/{}".format(len(completed), total_questions))
-    for q in completed:
-        print("\t {}".format(q))
+    print(f"To Do Count: {len(todos)}")
+    print(f"Number of done tasks: {len(completed)}/{len(todos)}")
+    for task in completed:
+        print("\t {}".format(task))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
