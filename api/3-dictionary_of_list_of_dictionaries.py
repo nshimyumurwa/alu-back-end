@@ -1,37 +1,38 @@
 #!/usr/bin/python3
-"""Script that gets user data (Todo list) from API
-and then export the result to csv file. """
+"""
+Module for exporting all employees TODO lists to JSON format
+"""
 
 import json
 import requests
 
 
-def main():
-    """main function"""
-    todo_url = 'https://jsonplaceholder.typicode.com/todos'
+def export_all_to_json():
+    """
+    Exports all employees TODO lists to JSON file
+    """
+    base_url = "https://jsonplaceholder.typicode.com"
+    users_response = requests.get(f"{base_url}/users")
+    users_data = users_response.json()
+    all_employees_data = {}
+    for user in users_data:
+        user_id = user.get("id")
+        username = user.get("username")
+        todos_response = requests.get(f"{base_url}/users/{user_id}/todos")
+        todos_data = todos_response.json()
+        user_tasks = []
+        for task in todos_data:
+            task_dict = {
+                "username": username,
+                "task": task.get("title"),
+                "completed": task.get("completed")
+            }
+            user_tasks.append(task_dict)
+        all_employees_data[str(user_id)] = user_tasks
+    filename = "todo_all_employees.json"
+    with open(filename, 'w') as jsonfile:
+        json.dump(all_employees_data, jsonfile)
 
-    response = requests.get(todo_url)
 
-    output = {}
-
-    for todo in response.json():
-        user_id = todo.get('userId')
-        if user_id not in output.keys():
-            output[user_id] = []
-            user_url = 'https://jsonplaceholder.typicode.com/users/{}'.format(
-                user_id)
-            user_name = requests.get(user_url).json().get('username')
-
-        output[user_id].append(
-            {
-                "username": user_name,
-                "task": todo.get('title'),
-                "completed": todo.get('completed')
-            })
-
-    with open("todo_all_employees.json", 'w') as file:
-        json.dump(output, file)
-
-
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    export_all_to_json()
