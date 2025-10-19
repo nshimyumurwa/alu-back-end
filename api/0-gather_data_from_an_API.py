@@ -1,15 +1,22 @@
 #!/usr/bin/python3
-"""Example script for Web Infrastructure task"""
+"""Script that, using a REST API, returns information about an employee's TODO list progress"""
+
 import requests
 import sys
 
 if __name__ == "__main__":
-    user_id = sys.argv[1]
-    url = f"https://jsonplaceholder.typicode.com/users/{user_id}/todos"
-    response = requests.get(url)
-    todos = response.json()
+    if len(sys.argv) > 1:
+        user_id = sys.argv[1]
+        base_url = "https://jsonplaceholder.typicode.com"
 
-    done_tasks = [t for t in todos if t.get("completed")]
-    print(f"Employee {user_id} is done with tasks({len(done_tasks)}/{len(todos)}):")
-    for task in done_tasks:
-        print(f"\t {task.get('title')}")
+        # Get user info
+        user = requests.get(f"{base_url}/users/{user_id}").json()
+        employee_name = user.get("name")
+
+        # Get todos
+        todos = requests.get(f"{base_url}/todos?userId={user_id}").json()
+        done_tasks = [task for task in todos if task.get("completed")]
+
+        print(f"Employee {employee_name} is done with tasks({len(done_tasks)}/{len(todos)}):")
+        for task in done_tasks:
+            print(f"\t {task.get('title')}")
