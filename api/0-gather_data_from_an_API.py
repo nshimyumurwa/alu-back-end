@@ -16,12 +16,12 @@ if __name__ == "__main__":
 
     base_url = "https://jsonplaceholder.typicode.com"
     user_response = requests.get("{}/users/{}".format(base_url,
-                                                       employee_id))
+                                                      employee_id))
     todos_response = requests.get("{}/todos?userId={}".format(base_url,
-                                                               employee_id))
+                                                              employee_id))
 
     if (user_response.status_code != 200 or
-            todos_response.status_code != 200):
+        todos_response.status_code != 200):
         sys.exit(1)
 
     user_data = user_response.json()
@@ -36,4 +36,4 @@ if __name__ == "__main__":
         employee_name, num_completed, total_tasks))
 
     for task in completed_tasks:
-        print("\t {}".format(task.get('title')))
+        print("\t {}".format(task.get("title")))
