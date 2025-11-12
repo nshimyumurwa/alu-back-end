@@ -20,19 +20,19 @@ if __name__ == "__main__":
     all_employees_data = {}
 
     for user in users_data:
-        user_id = user.get("id")
+        user_id = str(user.get("id"))
         username = user.get("username")
         user_tasks = []
 
         for task in todos_data:
-            if task.get("userId") == user_id:
+            if task.get("userId") == user.get("id"):
                 user_tasks.append({
                     "username": username,
                     "task": task.get("title"),
                     "completed": task.get("completed")
                 })
 
-        all_employees_data[str(user_id)] = user_tasks
+        all_employees_data[user_id] = user_tasks
 
     filename = "todo_all_employees.json"
 
